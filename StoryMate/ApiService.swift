@@ -11,9 +11,9 @@ class ApiService {
     static let shared = ApiService()
     private let baseURL = "http://localhost:3001/ai-conversations"
 
-    func getConversations(userId: String, completion: @escaping (Result<[Conversation], Error>) -> Void) {
+    func getConversations(userId: String?, completion: @escaping (Result<[Conversation], Error>) -> Void) {
         var urlComponents = URLComponents(string: baseURL)!
-        urlComponents.queryItems = [URLQueryItem(name: "userId", value: userId)]
+        urlComponents.queryItems = [URLQueryItem(name: "userId", value: "123e4567-e89b-12d3-a456-426614174000")]
         
         guard let url = urlComponents.url else { return }
         
@@ -22,6 +22,7 @@ class ApiService {
             guard let data = data else { return }
             do {
                 let convs = try JSONDecoder().decode([Conversation].self, from: data)
+                print(convs)
                 completion(.success(convs))
             } catch {
                 completion(.failure(error))
@@ -30,7 +31,7 @@ class ApiService {
     }
 
     func getMessages(conversationId: String, userId: String, completion: @escaping (Result<[Message], Error>) -> Void) {
-        let urlString = "\(baseURL)/\(conversationId)/messages?userId=\(userId)"
+        let urlString = "\(baseURL)/\(conversationId)/messages?userId=691b0b4db31279c7184a2c18"
         guard let url = URL(string: urlString) else { return }
         
         URLSession.shared.dataTask(with: url) { data, _, error in

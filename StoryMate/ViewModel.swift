@@ -20,6 +20,19 @@ class ChatViewModel: ObservableObject {
         self.userId = userId
         loadConversations()
     }
+    func getMessages() {
+        guard let convId = selectedConversation?.id else { return }
+        ApiService.shared.getMessages(conversationId: convId, userId: userId) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let msgs):
+                    self?.messages = msgs
+                case .failure(let error):
+                    print("Failed to load messages:", error)
+                }
+            }
+        }
+    }
     
     func loadConversations() {
         ApiService.shared.getConversations(userId: userId) { [weak self] result in
@@ -36,10 +49,11 @@ class ChatViewModel: ObservableObject {
             }
         }
     }
-    
+
     func selectConversation(_ conversation: Conversation) {
         self.selectedConversation = conversation
-        ApiService.shared.getMessages(conversationId: conversation.id, userId: userId) { [weak self] result in
+        ApiService.shared.getMessages(conversationId: "691b0b4db31279c7184a2c18", userId: userId) { [weak self] result in
+
             DispatchQueue.main.async {
                 switch result {
                 case .success(let msgs):
@@ -52,9 +66,9 @@ class ChatViewModel: ObservableObject {
     }
     
     func sendMessage() {
-        guard let conv = selectedConversation else { return }
-        let dto = CreateMessageDto(userId: userId, content: messageInput)
-        ApiService.shared.createMessage(conversationId: conv.id, dto: dto) { [weak self] result in
+//        guard let convId = selectedConversation?.id else { return } // safely unwrap
+        let dto = CreateMessageDto(userId: userId, content: messageInput , sender: "user")
+        ApiService.shared.createMessage(conversationId: "691b0b4db31279c7184a2c18", dto: dto) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let msg):

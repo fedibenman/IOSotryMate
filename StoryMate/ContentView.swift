@@ -9,8 +9,14 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
+    @StateObject private var viewModel = ChatViewModel(userId: "yourUserId")
+    private let userId = "yourUserId"
+
     var body: some View {
-        ChatPage(viewModel: MockChatViewModel(), userId: "user", onMenuClick: {})
+        ChatPageWithDrawer(
+            viewModel: viewModel,
+            userId: userId
+        )
     }
 }
 
